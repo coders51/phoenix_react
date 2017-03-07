@@ -1,0 +1,83 @@
+use Mix.Config
+
+# For development, we disable any cache and enable
+# debugging and code reloading.
+#
+# The watchers configuration can be used to run external
+# watchers to your application. For example, we use it
+# with brunch.io to recompile .js and .css sources.
+config :phoenix_react, PhoenixReact.Endpoint,
+  http: [port: 4000],
+  debug_errors: true,
+  code_reloader: true,
+  check_origin: false,
+  watchers: [
+    {"node", [
+                "node_modules/webpack/bin/webpack.js",
+                "--watch-stdin",
+                "--progress",
+                "--colors",
+                "--config",
+                "webpack.client.config.js"
+             ]
+    },
+    {"node", [
+               "node_modules/webpack/bin/webpack.js",
+               "--watch-stdin",
+               "--progress",
+               "--colors",
+               "--config",
+               "webpack.server.config.js"
+             ]
+    },
+  ]
+
+config :phoenix_react, PhoenixReact.ReactIo,
+  script: "node_modules/react-stdio/bin/react-stdio",
+  watch_files: [
+    Path.join([__DIR__, "../priv/static/js/server.js"])
+  ]
+
+# Watch static and templates for browser reloading.
+config :phoenix_react, PhoenixReact.Endpoint,
+  live_reload: [
+    patterns: [
+      ~r{priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$},
+      ~r{priv/gettext/.*(po)$},
+      ~r{web/views/.*(ex)$},
+      ~r{web/templates/.*(eex)$}
+    ]
+  ]
+
+# Do not include metadata nor timestamps in development logs
+config :logger, :console, format: "[$level] $message\n"
+
+# Set a higher stacktrace during development. Avoid configuring such
+# in production as building large stacktraces may be expensive.
+config :phoenix, :stacktrace_depth, 20
+
+# Configure your database
+config :phoenix_react, PhoenixReact.Repo,
+  adapter: Ecto.Adapters.Postgres,
+  username: "NEED VALUE",
+  database: "NEED VALUE",
+  hostname: "localhost",
+  pool_size: 10
+
+config :phoenix_react, O51OAuth,
+  client_id: "NEED VALUE",
+  client_secret: "NEED VALUE",
+  redirect_uri: "http://localhost:4000/auth/callback",
+  site: "https://users.screenweek.it",
+  authorize_url: "https://users.screenweek.it/oauth/authorize",
+  token_url: "https://users.screenweek.it/oauth/token"
+
+config :sentry,
+  dsn: "NEED VALUE",
+  use_error_logger: true,
+  environment_name: :prod,
+  included_environments: [:prod],
+  tags: %{
+    env: "production"
+  },
+  hackney_opts: [pool: :my_pool]
