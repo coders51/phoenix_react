@@ -68,9 +68,9 @@ config :phoenix_react, O51OAuth,
   client_id: "NEED VALUE",
   client_secret: "NEED VALUE",
   redirect_uri: "http://localhost:4000/auth/callback",
-  site: "https://users.screenweek.it",
-  authorize_url: "https://users.screenweek.it/oauth/authorize",
-  token_url: "https://users.screenweek.it/oauth/token"
+  site: "OAUTH DOMAIN",
+  authorize_url: "OAUTH DOMAIN/oauth/authorize",
+  token_url: "OAUTH DOMAIN/oauth/token"
 
 config :sentry,
   dsn: "NEED VALUE",
