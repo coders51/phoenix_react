@@ -47,19 +47,7 @@ module.exports = {
         use: ExtractTextPlugin.extract({
           fallback: 'style-loader',
           use: [
-            'css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]', {
-              loader: 'postcss-loader',
-              options: {
-                plugins: [
-                  autoprefixer({
-                    browsers: [
-                      'last 3 version',
-                      'ie >= 10',
-                    ],
-                  }),
-                ],
-              },
-            },
+            ...cssLoaders,
           ],
         }),
       },
@@ -68,19 +56,7 @@ module.exports = {
         use: ExtractTextPlugin.extract({
           fallback: 'style-loader',
           use: [
-            'css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]', {
-              loader: 'postcss-loader',
-              options: {
-                plugins: [
-                  autoprefixer({
-                    browsers: [
-                      'last 3 version',
-                      'ie >= 10',
-                    ],
-                  }),
-                ],
-              },
-            },
+            ...cssLoaders,
             'sass-loader',
           ],
         }),
