@@ -110,19 +110,10 @@ defmodule PhoenixReact.AuthController do
   end
 
   defp manage_session(conn, user, token) do
-
-    case List.keyfind(conn.req_headers, "referer", 0) do
-      {"referer", referer} ->
-        conn
-        |> put_session(:o51_uid, user.o51_uid)
-        |> put_session(:access_token, token.access_token)
-        |> redirect external: referer
-      nil ->
-        conn
-        |> put_session(:o51_uid, user.o51_uid)
-        |> put_session(:access_token, token.access_token)
-        |> redirect external: get_session(conn, :last_path) || Router.Helpers.url(conn)
-    end
+    conn
+    |> put_session(:o51_uid, user.o51_uid)
+    |> put_session(:access_token, token.access_token)
+    |> redirect external: get_session(conn, :last_path) || Router.Helpers.url(conn)
   end
 
 end
