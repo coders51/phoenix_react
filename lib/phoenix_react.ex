@@ -14,7 +14,8 @@ defmodule PhoenixReact do
       supervisor(PhoenixReact.Endpoint, []),
       # Start your own worker by calling: PhoenixReact.Worker.start_link(arg1, arg2, arg3)
       # worker(PhoenixReact.Worker, [arg1, arg2, arg3]),
-      supervisor(PhoenixReact.ReactIo, [])
+      supervisor(PhoenixReact.ReactIo, []),
+      worker(GuardianDb.ExpiredSweeper, [])
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html

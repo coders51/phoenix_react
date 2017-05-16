@@ -35,9 +35,6 @@ defmodule PhoenixReact.Web do
       import Ecto
       import Ecto.Query
 
-      import Canary.Plugs
-
-
       import PhoenixReact.Router.Helpers
       import PhoenixReact.Gettext
 

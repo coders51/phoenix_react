@@ -10,7 +10,7 @@ class MainPage extends React.Component {
 
     const { currentUser } = this.props;
 
-    let loginButton = <div data-href='/auth' className={`partecipa-button`}>
+    let loginButton = <div data-href='/auth/orbita' className={`partecipa-button`}>
       Accedi
     </div>;
 

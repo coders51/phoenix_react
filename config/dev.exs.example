@@ -68,9 +68,31 @@ config :phoenix_react, O51OAuth,
   client_id: "NEED VALUE",
   client_secret: "NEED VALUE",
   redirect_uri: "http://localhost:4000/auth/callback",
-  site: "OAUTH DOMAIN",
-  authorize_url: "OAUTH DOMAIN/oauth/authorize",
-  token_url: "OAUTH DOMAIN/oauth/token"
+  site: "https://users.screenweek.it",
+  authorize_url: "https://users.screenweek.it/oauth/authorize",
+  token_url: "https://users.screenweek.it/oauth/token"
+
+config :ueberauth, Ueberauth.Strategy.Orbita.OAuth,
+  client_id: "NEED VALUE",
+  client_secret: "NEED VALUE",
+  redirect_uri: "http://localhost:4000/auth/orbita/callback",
+  site: "https://users.screenweek.it",
+  authorize_url: "https://users.screenweek.it/oauth/authorize",
+  token_url: "https://users.screenweek.it/oauth/token"
+
+config :ueberauth, Ueberauth,
+  providers: [
+    orbita: { Ueberauth.Strategy.Orbita, [] }
+  ]
+
+config :guardian, Guardian,
+  allowed_algos: ["HS512"], # optional
+  verify_module: Guardian.JWT,  # optional
+  issuer: "PhoenixReact",
+  ttl: { 30, :days },
+  verify_issuer: true, # optional
+  secret_key: "NEED VALUE",
+  serializer: PhoenixReact.GuardianSerializer
 
 config :sentry,
   dsn: "NEED VALUE",

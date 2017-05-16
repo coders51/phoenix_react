@@ -22,7 +22,20 @@ config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
 
-config :canary, repo: PhoenixReact.Repo
+config :guardian, Guardian,
+  permissions: %{
+    default: [
+      :read,
+      :write,
+    ]
+  }
+
+config :guardian, Guardian,
+           hooks: GuardianDb
+
+config :guardian_db, GuardianDb,
+       repo: PhoenixReact.Repo,
+           sweep_interval: 120
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

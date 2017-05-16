@@ -32,11 +32,12 @@ defmodule PhoenixReact.Mixfile do
         :oauth2,
         :std_json_io,
         :httpoison,
-        :canary,
         :secure_random,
         :logger_file_backend,
-        :canada,
         :edeliver,
+        :ueberauth,
+        :guardian,
+        :guardian_db
         ]
     ]
   end
@@ -52,7 +53,6 @@ defmodule PhoenixReact.Mixfile do
     [{:phoenix, "~> 1.2.1"},
      {:phoenix_pubsub, "~> 1.0"},
      {:sentry, "~> 3.0.0"},
-     {:canary, "~> 1.1.0"},
      {:secure_random, "~> 0.5"},
      {:phoenix_ecto, "~> 3.0"},
      {:postgrex, ">= 0.0.0"},
@@ -67,7 +67,10 @@ defmodule PhoenixReact.Mixfile do
      {:httpoison, "~> 0.11.0"},
      {:std_json_io, git: "git@github.com:coders51/std_json_io.git"},
      {:edeliver, "~> 1.4.2"},
-     {:logger_file_backend, "~> 0.0.9"}
+     {:logger_file_backend, "~> 0.0.9"},
+     {:ueberauth, "~> 0.4"},
+     {:guardian, "~> 0.14"},
+     {:guardian_db, "~> 0.8.0"},
    ]
   end
 
