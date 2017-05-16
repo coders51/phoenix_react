@@ -1,0 +1,83 @@
+#!/usr/bin/env bash
+
+APP="phoenix_react" # name of your release
+
+RELEASE_STORE="deploy@46.4.65.5:/home/deploy/releases"
+AUTO_VERSION=commit-count+git-revision+branch
+
+BUILD_HOST="46.4.65.5" # host where to build the release
+BUILD_USER="deploy" # local user at build host
+BUILD_AT="/home/deploy/building/phoenix_react" # build directory on build host
+
+STAGING_HOSTS="46.4.65.5" # staging / test hosts separated by space
+STAGING_USER="deploy" # local user at staging hosts
+TEST_AT="/home/deploy/sites/phoenix_react/staging" # deploy directory on staging hosts. default is DELIVER_TO
+
+PRODUCTION_HOSTS="46.4.65.5" # deploy / production hosts separated by space
+PRODUCTION_USER="deploy" # local user at deploy hosts
+DELIVER_TO="/home/deploy/sites/phoenix_react/production" # deploy directory on production hosts
+
+# For *Phoenix* projects, symlink *.secret.exs to our tmp source
+pre_erlang_get_and_update_deps() {
+  if [ "$TARGET_MIX_ENV" = "prod" ]; then
+    status "Linking prod.secret.exs" # log output prepended with "----->"
+    local _prod_secret_path="/home/deploy/sites/phoenix_react/production/shared/prod.secret.exs"
+    __sync_remote "
+      ln -sfn '$_prod_secret_path' '$BUILD_AT/config/prod.secret.exs'
+    "
+  fi
+  if [ "$TARGET_MIX_ENV" = "staging" ]; then
+    status "Linking staging.secret.exs" # log output prepended with "----->"
+    local _staging_secret_path="/home/deploy/sites/phoenix_react/staging/shared/staging.secret.exs"
+    __sync_remote "
+      ln -sfn '$_staging_secret_path' '$BUILD_AT/config/staging.secret.exs'
+    "
+  fi
+}
+
+pre_erlang_clean_compile() {
+  status "Running yarn install" # log output prepended with "----->"
+  __sync_remote " # runs the commands on the build host
+    [ -f ~/.profile ] && source ~/.profile # load profile (optional)
+    set -e # fail if any command fails (recommended)
+    cd '$BUILD_AT' # enter the build directory on the build host (required)
+    # prepare something
+    mkdir -p priv/static # required by the phoenix.digest task
+    # run your custom task
+    env
+    node -v
+    yarn
+  "
+
+  status "Compiling client js"
+  __sync_remote " # runs the commands on the build host
+    [ -f ~/.profile ] && source ~/.profile # load profile (optional)
+    set -e # fail if any command fails (recommended)
+    cd '$BUILD_AT' # enter the build directory on the build host (required)
+    # prepare something
+    mkdir -p priv/static # required by the phoenix.digest task
+    # run your custom task
+    NODE_ENV=production node_modules/webpack/bin/webpack.js --optimize-minimize --config webpack.client.config.js
+  "
+  status "Compiling server js"
+  __sync_remote " # runs the commands on the build host
+    [ -f ~/.profile ] && source ~/.profile # load profile (optional)
+    set -e # fail if any command fails (recommended)
+    cd '$BUILD_AT' # enter the build directory on the build host (required)
+    # prepare something
+    mkdir -p priv/static # required by the phoenix.digest task
+    # run your custom task
+    NODE_ENV=production node_modules/webpack/bin/webpack.js --optimize-minimize --config webpack.server.config.js
+  "
+
+  status "Running phoenix.digest" # log output prepended with "----->"
+  __sync_remote " # runs the commands on the build host
+    [ -f ~/.profile ] && source ~/.profile # load profile (optional)
+    set -e # fail if any command fails (recommended)
+    cd '$BUILD_AT' # enter the build directory on the build host (required)
+    # prepare something
+    mkdir -p priv/static # required by the phoenix.digest task
+    # run your custom task
+    APP='$APP' MIX_ENV='$TARGET_MIX_ENV' $MIX_CMD phoenix.digest $SILENCE
+  "
+}
