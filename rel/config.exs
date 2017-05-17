@@ -24,13 +24,19 @@ use Mix.Releases.Config,
 environment :dev do
   set dev_mode: true
   set include_erts: false
-  set cookie: :"k.vA>Y$ne[|v}HL!~?=PL`Cv}%HHx|_6Wp~2uLl67c~x4L0Y=urv0E23.YJW.wL%"
+  set cookie: :"k.vA>Y$ne[|v}HL!~?=PL`Cv}%HHx|q2w3asd_6Wp~2uLl67c~x4L0Y=urv0E23.YJW.wL%"
 end
 
 environment :prod do
   set include_erts: true
   set include_src: false
-  set cookie: :"6XC,;hBhg?Y0W}~.<mt=Ji}7_S^t$b5r]|9_a9tAm;19NgjDmZyvZs)b<wXZ1Q4E"
+  set cookie: :"6XC,;hBhg?Y0W}~.<mt=Jasdi}7_S^t$b5r]|9_a9tAm;19NgjDmZyvZs)b<wXZ1Q4E"
+end
+
+environment :staging do
+  set include_erts: true
+  set include_src: false
+  set cookie: :"CsOja4f68ZhHcQ2hy6N9B8CQ+pw5wSd+vk123asdiZTd/JcuA30Iij33RCVywyTMGyCxWE"
 end
 
 # You may define one or more releases in this file.
@@ -40,4 +46,10 @@ end
 
 release :phoenix_react do
   set version: current_version(:phoenix_react)
+  set vm_args: "rel/templates/vm.args.eex"
+  set overlay_vars: [node_name: "phoenix_react_#{Mix.env()}"]
 end
+
+# release :"phoenix_react_#{Mix.env()}" do
+#   set version: current_version(:phoenix_react)
+# end
