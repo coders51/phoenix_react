@@ -19,7 +19,7 @@ defmodule PhoenixReact.PageView do
           })
       end
 
-    result = PhoenixReact.ReactIo.json_call!(%{
+    result = StdJsonIo.json_call!(%{
       component: Application.app_dir(:phoenix_react, "priv/static/js/server.js"),
       props: props,
     })
