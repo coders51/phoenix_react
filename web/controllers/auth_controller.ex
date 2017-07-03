@@ -40,8 +40,8 @@ defmodule PhoenixReact.AuthController do
 
     {:ok, token, _full_claims } = Guardian.encode_and_sign(user, :remember, perms: %{default: [:read, :write]})
     conn
-      |> put_resp_cookie("remember_me", token)
-      |> put_resp_cookie("o51_uid", "#{auth.uid}")
+      |> put_resp_cookie("remember_me", token, max_age: 60*60*24*365*10)
+      |> put_resp_cookie("o51_uid", "#{auth.uid}", max_age: 60*60*24*365*10)
       |> redirect external: get_session(conn, :last_path) || Router.Helpers.url(conn)
 
   end
