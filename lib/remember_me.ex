@@ -47,10 +47,10 @@ defmodule PhoenixReact.Plug.RememberMe do
         {:ok, token, full_claims } = Guardian.encode_and_sign(user, :remember, perms: perms)
         case Guardian.revoke! token, full_claims do
           :ok ->
-            new_conn = Guardian.Plug.api_sign_in(conn, user)
+            new_conn = conn |> Guardian.Plug.api_sign_in(user)
             jwt = Guardian.Plug.current_token(new_conn)
             new_conn
-              |> put_resp_cookie("o51_uid", user.o51_uid, max_age: 60*60*24*365*10)
+              |> put_resp_cookie("o51_uid", "#{user.o51_uid}", max_age: 60*60*24*365*10)
               |> put_resp_cookie("remember_me", jwt, max_age: 60*60*24*365*10)
           {:error, :could_not_revoke_token} -> conn
           {:error, _reason} -> conn
