@@ -33,12 +33,14 @@ defmodule PhoenixReact.AuthController do
     user = {Repo.get_by(User, o51_uid: auth.uid), auth, conn}
     |> save_user
 
-    # perms = case user.is_admin do
-    #   false -> %{default: [:read, :write]}
-    #   true -> %{default: [:read, :write], admin: [:dashboard]}
-    # end
+    perms = case user.is_admin do
+      false -> %{default: [:read, :write]}
+      true -> %{default: [:read, :write], admin: [:dashboard]}
+    end
 
-    {:ok, token, _full_claims } = Guardian.encode_and_sign(user, :remember, perms: %{default: [:read, :write]})
+    claims = Guardian.Claims.app_claims |> Map.put("perms", perms) |> Guardian.Claims.ttl({60, :days})
+
+    {:ok, token, _full_claims } = Guardian.encode_and_sign(user, :remember, claims)
     conn
       |> put_resp_cookie("remember_me", token, max_age: 60*60*24*365*10)
       |> put_resp_cookie("o51_uid", "#{auth.uid}", max_age: 60*60*24*365*10)
