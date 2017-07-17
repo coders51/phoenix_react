@@ -20,10 +20,10 @@ defmodule PhoenixReact.Plug.RememberMe do
                 jwt -> conn |> put_resp_cookie("remember_me", jwt, max_age: 60*60*24*365*10)
               end
 
-              conn = case conn.req_cookies["o51_uid"] do
-                nil -> conn
+              %{conn: conn, jwt: jwt} = case conn.req_cookies["o51_uid"] do
+                nil -> %{conn: conn, jwt: jwt}
                 o51_uid ->
-                  conn = Repo.get_by(User, o51_uid: o51_uid) |> renew_perms(conn, claims, jwt)
+                  Repo.get_by(User, o51_uid: o51_uid) |> renew_perms(conn, claims, jwt)
               end
 
               put_session(conn, Guardian.Keys.base_key(the_key), jwt)
@@ -47,8 +47,9 @@ defmodule PhoenixReact.Plug.RememberMe do
         new_conn
           |> put_resp_cookie("o51_uid", "#{user.o51_uid}", max_age: 60*60*24*365*10)
           |> put_resp_cookie("remember_me", jwt, max_age: 60*60*24*365*10)
-      {:error, :could_not_revoke_token} -> conn
-      {:error, _reason} -> conn
+        %{conn: new_conn, jwt: jwt}
+      {:error, :could_not_revoke_token} -> %{conn: conn, jwt: jwt}
+      {:error, _reason} -> %{conn: conn, jwt: jwt}
     end
   end
   defp renew_perms(nil, conn, _claims, _jwt), do: conn
