@@ -52,5 +52,5 @@ defmodule PhoenixReact.Plug.RememberMe do
       {:error, _reason} -> %{conn: conn, jwt: jwt}
     end
   end
-  defp renew_perms(nil, conn, _claims, _jwt), do: conn
+  defp renew_perms(nil, conn, nil, nil), do: conn
 end
